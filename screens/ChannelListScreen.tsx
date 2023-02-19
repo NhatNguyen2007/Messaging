@@ -1,16 +1,28 @@
+import { useNavigation } from '@react-navigation/native';
+import { useContext, useState } from 'react';
 import { StyleSheet } from 'react-native';
+import { ChannelList } from 'stream-chat-expo';
 
 import EditScreenInfo from '../components/EditScreenInfo';
 import { Text, View } from '../components/Themed';
+import AuthContext from '../contexts/Authentication';
 import { RootTabScreenProps } from '../types';
 
 export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'>) {
+  const { userId } = useContext(AuthContext);
+
+  const filters = {
+    members: {
+      $in: [userId],
+    }
+  };
+
+  const onChannelPressed = (channel: any) => {
+    navigation.navigate("Channel", {channel});
+  }
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Tab One</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="/screens/TabOneScreen.tsx" />
-    </View>
+    <ChannelList onSelect={onChannelPressed} filters={filters}/>
   );
 }
 
